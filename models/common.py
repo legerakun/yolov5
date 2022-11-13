@@ -38,6 +38,10 @@ from utils.general import (LOGGER, ROOT, Profile, check_requirements, check_suff
 from utils.plots import Annotator, colors, save_one_box
 from utils.torch_utils import copy_attr, smart_inference_mode
 
+def is_notebook():
+    # Is environment a Jupyter notebook? Verified on Colab, Jupyterlab, Kaggle, Paperspace
+    ipython_type = str(type(IPython.get_ipython()))
+    return 'colab' in ipython_type or 'zmqshell' in ipython_type
 
 def autopad(k, p=None, d=1):  # kernel, padding, dilation
     # Pad to 'same' shape outputs
@@ -772,8 +776,7 @@ class Detections:
 
             im = Image.fromarray(im.astype(np.uint8)) if isinstance(im, np.ndarray) else im  # from np
             if show:
-                display(im) 
-                im.show(self.files[i])
+                display(im) if is_notebook() else im.show(self.files[i])
             if save:
                 f = self.files[i]
                 im.save(save_dir / f)  # save
